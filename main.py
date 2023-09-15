@@ -7,10 +7,13 @@ count_itens = 0;  # Número de itens disponíveis
 id = []
 weight = []
 value = [] 
-capacity = 0;
+capacity = 0 ;
 
 
 def find_fitness(individuo):
+    global capacity;
+    global weight;
+    global value;
     peso_total = 0
     valor_total = 0
 
@@ -22,7 +25,6 @@ def find_fitness(individuo):
     # Penalize soluções inválidas (se o peso total exceder a capacidade da mochila)
     if peso_total > capacity:
         return 0
-
     return valor_total
 
 #Solucao e valor máximo obtido
@@ -42,6 +44,7 @@ def genetic_solution():
         pais = random.choices(populacao, weights=aptidoes, k=tamanho_populacao)
         filhos = []
     #Crossover de um ponto
+    global count_itens;
     for i in range(0, tamanho_populacao, 2):
         pai1, pai2 = pais[i], pais[i + 1]
         ponto_corte = random.randint(1, count_itens - 1)
@@ -61,11 +64,14 @@ def genetic_solution():
     return best_solution, best_value
 
 def solve_knapsack_problem(file_path):
+    global count_itens;
+    global capacity;
     with open(file_path, "r") as file:
         lines = file.readlines()
-
-    n = int(lines[0].strip())
+    count_itens = int(lines[0].strip())
+    print(int(lines[-1].strip()))
     capacity = int(lines[-1].strip())
+    print(capacity)
     
     for line in lines[1:-1]:
         numbers = re.findall(r"[0-9]+", line)
@@ -84,7 +90,7 @@ def main():
         output_max_values.append(max_value)
         output_line = f"Instancia {iterator} : {max_value}\n"
         
-        with open("output/grasp.out", "a+") as output_file:
+        with open("output/genetic.out", "a+") as output_file:
             output_file.write(output_line)
 
 if __name__ == "__main__":
